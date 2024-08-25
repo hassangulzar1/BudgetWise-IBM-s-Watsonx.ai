@@ -32,6 +32,9 @@ const Page = () => {
   };
 
   // Handle form submission
+  // Handle form submission
+  // Handle form submission
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -40,10 +43,10 @@ const Page = () => {
     const totalExpenses =
       Number(budget.groceries) +
       Number(budget.rent) +
-      Number(budget.bills) + // Changed from "eatingOut" to "bills"
+      Number(budget.bills) +
       Number(budget.transportation) +
       Number(budget.shopping) +
-      Number(budget.others); // Include "others" in total expenses
+      Number(budget.others);
 
     // Check if expenses exceed income
     if (totalExpenses > Number(budget.income)) {
@@ -61,21 +64,62 @@ const Page = () => {
     };
 
     // Store budget data in local storage (replace if it already exists)
-    localStorage.setItem("budgetData", JSON.stringify(budgetData));
-
-    console.log("Budget Data:", budgetData);
-
-    // Call API to send the input data to the backend
     try {
-      await fetch("/api/budget", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(budget),
-      });
+      localStorage.setItem("budgetData", JSON.stringify(budgetData));
+      console.log(
+        "Budget Data successfully saved to local storage:",
+        budgetData
+      );
     } catch (error) {
-      alert(`Error sending data to the backend: ${error}`);
+      console.error("Failed to save budget data to local storage:", error);
+    }
+
+    // Create a prompt for the API based on the budget data
+    const prompt = `Given the following budget details:
+    - Income: $${budget.income}
+    - Saving Goals: $${budget.savingGoals}
+    - Groceries: $${budget.groceries}
+    - Rent: $${budget.rent}
+    - Bills: $${budget.bills}
+    - Transportation: $${budget.transportation}
+    - Shopping: $${budget.shopping}
+    - Others: $${budget.others}
+    
+    Provide suggestions to manage expenses effectively and improve savings. Include a step-by-step procedure to optimize spending.`;
+
+    // Call API to get suggestions
+    try {
+      const response = await fetch(
+        "https://budgetwise-plxm.onrender.com/budgetwise/v1/analyze",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ message: prompt }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch data from the API");
+      }
+
+      const apiData = await response.json();
+
+      // Store API response in local storage
+      try {
+        localStorage.setItem("budgetSuggestions", JSON.stringify(apiData));
+        console.log(
+          "Suggestions from API successfully saved to local storage:",
+          apiData
+        );
+      } catch (error) {
+        console.error("Failed to save suggestions to local storage:", error);
+      }
+    } catch (error) {
+      alert(`Error sending data to the backend: ${error.message}`);
+      setIsLoading(false);
+      return;
     }
 
     // Reset the form fields
@@ -84,10 +128,10 @@ const Page = () => {
       savingGoals: "",
       groceries: "",
       rent: "",
-      bills: "", // Changed from "eatingOut" to "bills"
+      bills: "",
       transportation: "",
       shopping: "",
-      others: "", // Reset "others" field
+      others: "",
     });
 
     setIsLoading(false);
