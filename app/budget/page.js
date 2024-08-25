@@ -61,11 +61,8 @@ const Page = () => {
     };
 
     // Store budget data in local storage (replace if it already exists)
-    try {
-      localStorage.setItem("budgetData", JSON.stringify(budgetData));
-    } catch (error) {
-      return;
-    }
+
+    localStorage.setItem("budgetData", JSON.stringify(budgetData));
 
     // Create a prompt for the API based on the budget data
     const prompt = `Given the following budget details:
@@ -80,7 +77,6 @@ const Page = () => {
     
     Provide suggestions to manage expenses effectively and improve savings. Include a step-by-step procedure to optimize spending.`;
 
-    // Call API to get suggestions
     // Call API to get suggestions
     try {
       const response = await fetch(
@@ -99,22 +95,43 @@ const Page = () => {
       }
 
       const apiData = await response.json();
+      console.log("API Response:", apiData);
 
-      // Check the type of apiData and handle accordingly
+      // Function to remove duplicates
+      const removeDuplicates = (suggestions) => {
+        const seen = new Set();
+        return suggestions.filter((suggestion) => {
+          const serialized = JSON.stringify(suggestion); // Serialize suggestion to compare entire objects
+          if (seen.has(serialized)) {
+            return false;
+          }
+          seen.add(serialized);
+          return true;
+        });
+      };
+
+      // Check if the response is an array
       if (Array.isArray(apiData)) {
-        // Handle the case where the response is an array
-        const uniqueApiData = [...new Set(apiData)];
-        // Store API response in local storage
+        const uniqueApiData = removeDuplicates(apiData);
+        // Store filtered API response in local storage
         localStorage.setItem(
           "budgetSuggestions",
           JSON.stringify(uniqueApiData)
         );
+        console.log(
+          "Filtered suggestions from API successfully saved to local storage:",
+          uniqueApiData
+        );
       } else if (typeof apiData === "object") {
-        // Handle the case where the response is an object
+        // If it's an object, you might want to handle duplicates within its fields if necessary
         localStorage.setItem("budgetSuggestions", JSON.stringify(apiData));
+        console.log(
+          "Suggestions from API successfully saved to local storage:",
+          apiData
+        );
       } else {
         // Handle unexpected response formats
-
+        console.error("Unexpected response format from the API:", apiData);
         alert("Unexpected response format from the API");
         setIsLoading(false);
         return;
