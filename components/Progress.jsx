@@ -33,7 +33,7 @@ const ProgressBar = () => {
 
       if (cnt >= progress) clearInterval(red);
       bar.style.width = cnt + "%";
-    }, 1000);
+    }, 500);
 
     // Cleanup intervals on component unmount
     return () => {

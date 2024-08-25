@@ -32,9 +32,6 @@ const Page = () => {
   };
 
   // Handle form submission
-  // Handle form submission
-  // Handle form submission
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
