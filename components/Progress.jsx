@@ -44,7 +44,7 @@ const ProgressBar = () => {
   return (
     <div style={styles.body}>
       <p style={{ color: "white", fontWeight: "700", marginTop: "1.5rem" }}>
-        You've spent ${spentAmount} of your monthly budget
+        You&apos;ve spent ${spentAmount} of your monthly budget
       </p>
 
       <div className="text" style={styles.text}></div>
@@ -61,9 +61,6 @@ const ProgressBar = () => {
 };
 
 const styles = {
-  body: {
-    // You may want to define the body styles here if needed
-  },
   container: {
     width: "100%",
     height: "20px",
