@@ -38,6 +38,25 @@ export default function Home() {
         <BudgetBox name="Expenses" price="3,000" />
         <BudgetBox name="Remaining" price="7,000" />
       </div>
+
+      {/* Ai Suggestions box  */}
+
+      <div
+        className={classes.contain}
+        style={{
+          marginTop: "4rem",
+          border: "1px solid white",
+          height: "40vh",
+          borderRadius: "10px",
+          textOverflow: "clip",
+        }}
+      >
+        <p
+          style={{ textAlign: "center", fontSize: "1.4rem", marginTop: "5px" }}
+        >
+          Suggestions to manage you budget
+        </p>
+      </div>
     </>
   );
 }
