@@ -1,45 +1,54 @@
 "use client";
-import React, { useEffect } from "react";
-const ProgressBar = () => {
+import React, { useEffect, useState } from "react";
+
+const ProgressBar = ({ totalBudget, spentAmount }) => {
+  const [percentage, setPercentage] = useState(0);
+
   useEffect(() => {
-    let cnt = 0;
-    let per = 0;
+    const calculatePercentage = () => {
+      if (totalBudget > 0) {
+        return Math.min((spentAmount / totalBudget) * 100, 100);
+      }
+      return 0;
+    };
 
-    const red = setInterval(() => {
-      let bar = document.querySelector(".progress");
-      let percentage = setInterval(() => {
-        per += 1;
-        if (per >= cnt) clearInterval(percentage);
-        document.querySelector(".text").innerHTML = `<p>${per}%</p>`;
-      }, 100);
+    const targetPercentage = calculatePercentage();
+    let currentPercentage = 0;
 
-      cnt += 10;
-
-      if (cnt === 50) clearInterval(red);
-      bar.style.width = cnt + "%";
-      console.log(cnt);
-    }, 1000);
+    const updateProgress = setInterval(() => {
+      if (currentPercentage >= targetPercentage) {
+        clearInterval(updateProgress);
+      } else {
+        currentPercentage += 1;
+        setPercentage(currentPercentage);
+      }
+    }, 10);
 
     // Cleanup intervals on component unmount
     return () => {
-      clearInterval(red);
+      clearInterval(updateProgress);
     };
-  }, []);
+  }, [totalBudget, spentAmount]);
 
   return (
     <div style={styles.body}>
       <p style={{ color: "white", fontWeight: "700", marginTop: "1.5rem" }}>
-        You've spent $3000 of your monthly budget
+        {`You've spent $${spentAmount} of your monthly budget`}
       </p>
 
-      <div className="text" style={styles.text}></div>
+      <div className="text" style={styles.text}>
+        <p>{`${Math.min(percentage, 100)}%`}</p>
+      </div>
 
       <div className="container" style={styles.container}>
-        <div className="progress" style={styles.progress}></div>
+        <div
+          className="progress"
+          style={{ ...styles.progress, width: `${percentage}%` }}
+        ></div>
       </div>
 
       <div className="text" style={{ opacity: "0.85", marginTop: "4px" }}>
-        $7,000 remaining
+        {`$${totalBudget - spentAmount} remaining`}
       </div>
     </div>
   );
@@ -59,7 +68,7 @@ const styles = {
     backgroundColor: "#DEDFE1",
     width: "0%",
     borderRadius: "10px",
-    transition: "all 1s",
+    transition: "width 1s",
   },
   text: {
     color: "white",

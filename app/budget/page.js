@@ -6,12 +6,12 @@ const Page = () => {
   // State to hold the input values
   const [budget, setBudget] = useState({
     income: "",
+    savingGoals: "",
     groceries: "",
     rent: "",
     eatingOut: "",
     transportation: "",
     shopping: "",
-    savingGoals: "",
   });
 
   // State to manage loading state for the submit button
@@ -31,30 +31,55 @@ const Page = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simulate an API call or processing time
-    setTimeout(() => {
-      console.log("Budget Data:", budget);
-      // Reset the form fields
-      setBudget({
-        income: "",
-        groceries: "",
-        rent: "",
-        eatingOut: "",
-        transportation: "",
-        shopping: "",
-        savingGoals: "",
-      });
+    // Calculate total expenses
+    const totalExpenses =
+      Number(budget.groceries) +
+      Number(budget.rent) +
+      Number(budget.eatingOut) +
+      Number(budget.transportation) +
+      Number(budget.shopping);
+
+    // Check if expenses exceed income
+    if (totalExpenses > Number(budget.income)) {
+      alert("Income is lower than expenses!");
       setIsLoading(false);
-    }, 2000); // Simulate a 2 second delay
+      return;
+    }
+
+    // Prepare the budget data to store in local storage
+    const budgetData = {
+      income: budget.income,
+      savingGoals: budget.savingGoals,
+      totalExpenses: totalExpenses,
+      remainingIncome: Number(budget.income) - totalExpenses,
+    };
+
+    // Store budget data in local storage (replace if it already exists)
+    localStorage.setItem("budgetData", JSON.stringify(budgetData));
+
+    console.log("Budget Data:", budgetData);
+
+    // Reset the form fields
+    setBudget({
+      income: "",
+      savingGoals: "",
+      groceries: "",
+      rent: "",
+      eatingOut: "",
+      transportation: "",
+      shopping: "",
+    });
+
+    setIsLoading(false);
   };
 
   return (
     <form onSubmit={handleSubmit}>
+      {/* Income Section */}
       <div className="contain">
         <h1 style={{ textAlign: "center", marginTop: "15px" }}>
           Add your Income
         </h1>
-
         <div
           className="group"
           style={{ marginTop: "1rem", marginLeft: "6rem" }}
@@ -72,11 +97,11 @@ const Page = () => {
         </div>
       </div>
 
+      {/* Expenses Section */}
       <div className="contain2">
         <h1 style={{ textAlign: "center", marginTop: "15px" }}>
           Add your Expenses
         </h1>
-
         <div style={{ display: "flex", flexWrap: "wrap" }}>
           <div
             className="group"
@@ -157,25 +182,32 @@ const Page = () => {
             <span className="bar"></span>
             <label>Shopping$</label>
           </div>
-
-          <div
-            className="group"
-            style={{ marginTop: "1rem", marginLeft: "6rem" }}
-          >
-            <input
-              type="number"
-              name="savingGoals"
-              value={budget.savingGoals}
-              onChange={handleInputChange}
-              required
-            />
-            <span className="highlight"></span>
-            <span className="bar"></span>
-            <label>Saving Goals$</label>
-          </div>
         </div>
       </div>
 
+      {/* Saving Goals Section */}
+      <div className="contain">
+        <h1 style={{ textAlign: "center", marginTop: "15px" }}>
+          Add your Saving Goals
+        </h1>
+        <div
+          className="group"
+          style={{ marginTop: "1rem", marginLeft: "6rem" }}
+        >
+          <input
+            type="number"
+            name="savingGoals"
+            value={budget.savingGoals}
+            onChange={handleInputChange}
+            required
+          />
+          <span className="highlight"></span>
+          <span className="bar"></span>
+          <label>Saving Goals$</label>
+        </div>
+      </div>
+
+      {/* Submit Button */}
       <div style={{ textAlign: "center", marginTop: "2rem" }}>
         <button type="submit" className="submitBtn" disabled={isLoading}>
           {isLoading ? "Loading..." : "Submit"}

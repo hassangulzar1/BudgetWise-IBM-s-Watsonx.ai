@@ -1,20 +1,40 @@
+"use client";
+import React, { useEffect, useState } from "react";
 import classes from "./page.module.css";
 import ProgressBar from "@/components/Progress";
 import BudgetBox from "@/components/BudgetBox";
 
 export default function Home() {
+  // State to hold the budget data
+  const [budgetData, setBudgetData] = useState({
+    income: 0,
+    totalExpenses: 0,
+    remainingIncome: 0,
+  });
+
+  // Retrieve the budget data from local storage when the component mounts
+  useEffect(() => {
+    const storedBudgetData = JSON.parse(localStorage.getItem("budgetData"));
+    if (storedBudgetData) {
+      setBudgetData(storedBudgetData);
+    }
+  }, []);
+
   return (
     <>
       <h1 className={`${classes.contain} ${classes.headingLine}`}>
-        Your personlized budget
+        Your personalized budget
       </h1>
 
       <p className={`${classes.contain} ${classes.para}`}>
-        based on you income, expenses and goals
+        based on your income, expenses, and goals
       </p>
 
       <div style={{ marginTop: "1rem" }} className={classes.contain}>
-        <ProgressBar />
+        <ProgressBar
+          totalBudget={budgetData.income}
+          spentAmount={budgetData.totalExpenses}
+        />
       </div>
 
       <h1
@@ -24,7 +44,7 @@ export default function Home() {
         Monthly budget
       </h1>
 
-      {/* budget boxex  */}
+      {/* Budget boxes */}
       <div
         className={classes.contain}
         style={{
@@ -34,13 +54,25 @@ export default function Home() {
           flexWrap: "wrap",
         }}
       >
-        <BudgetBox name="Income" price="10,000" />
-        <BudgetBox name="Expenses" price="3,000" />
-        <BudgetBox name="Remaining" price="7,000" />
+        <BudgetBox name="Income" price={`${budgetData.income}`} />
+        <BudgetBox name="Expenses" price={`${budgetData.totalExpenses}`} />
+        <BudgetBox name="Remaining" price={`${budgetData.remainingIncome}`} />
       </div>
 
-      {/* Ai Suggestions box  */}
+      {/* Budget Summary */}
+      <div
+        className={classes.contain}
+        style={{ marginTop: "2rem", textAlign: "center" }}
+      >
+        <p style={{ fontSize: "1.2rem", color: "white" }}>
+          {`You've spent $${budgetData.totalExpenses} of your monthly budget`}
+        </p>
+        <p style={{ fontSize: "1.2rem", color: "white" }}>
+          {`$${budgetData.remainingIncome} remaining`}
+        </p>
+      </div>
 
+      {/* AI Suggestions box */}
       <div
         className={classes.contain}
         style={{
@@ -54,7 +86,7 @@ export default function Home() {
         <p
           style={{ textAlign: "center", fontSize: "1.4rem", marginTop: "5px" }}
         >
-          Suggestions to manage you budget
+          Suggestions to manage your budget
         </p>
       </div>
     </>
