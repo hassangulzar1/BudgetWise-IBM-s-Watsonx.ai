@@ -26,11 +26,17 @@ export default function Home() {
 
     if (storedSuggestions) {
       // Replace newline characters with <br /> for HTML rendering
-      const formattedSuggestions = storedSuggestions.response.replace(
-        /\n/g,
-        "<br />"
-      );
-      setSuggestions(formattedSuggestions);
+      let formattedSuggestions = storedSuggestions.response
+        .replace(/\n/g, "<br />") // Keep newlines as <br />
+        .replace(/(\.)(?!\d)/g, ".<br />"); // Replace periods with <br /> unless followed by a digit (to avoid breaking sentences with decimal numbers)
+
+      // Add numbering to each line
+      let lines = formattedSuggestions.split("<br />");
+      let numberedLines = lines
+        .map((line, index) => `${index + 1}. ${line}`)
+        .join("<br />");
+
+      setSuggestions(numberedLines);
     }
   }, []);
 
