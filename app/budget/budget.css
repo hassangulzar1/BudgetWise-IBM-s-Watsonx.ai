@@ -127,3 +127,44 @@ input:focus ~ .highlight {
   width: 90%;
   margin: auto;
 }
+
+.submitBtn {
+  background-color: #38b2ac; /* Green background */
+  border: none; /* Remove borders */
+  color: #ffffff; /* White text */
+  padding: 15px 32px; /* Some padding */
+  text-align: center; /* Center the text */
+  text-decoration: none; /* Remove underline */
+  display: inline-block; /* Make the button inline-block */
+  font-size: 16px; /* Increase font size */
+  margin: 4px 2px; /* Some margin */
+  cursor: pointer; /* Pointer/hand icon on hover */
+  border-radius: 12px; /* Rounded corners */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
+  position: relative;
+  overflow: hidden;
+}
+
+.submitBtn:hover {
+  background-color: #319795; /* Darker green on hover */
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); /* Add shadow on hover */
+}
+
+.submitBtn:before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300%;
+  height: 300%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: all 0.75s ease;
+  border-radius: 50%;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.5);
+}
+
+.submitBtn:hover:before {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
