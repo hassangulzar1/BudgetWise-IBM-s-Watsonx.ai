@@ -2,6 +2,7 @@ import React from "react";
 import "./Navbar.css";
 import Image from "next/image";
 import logo from "../assets/logo.png";
+import Link from "next/link";
 const Navbar = () => {
   return (
     <nav class="navbar">
@@ -14,13 +15,10 @@ const Navbar = () => {
         </div>
         <ul class="menu-items">
           <li>
-            <a href="#">Home</a>
+            <Link href="/">Home</Link>
           </li>
           <li>
-            <a href="#">About</a>
-          </li>
-          <li>
-            <a href="#">Category</a>
+            <Link href="/budget">Add Budget</Link>
           </li>
         </ul>
         <Image src={logo} height={60} width={200} />
