@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation"; // Import useRouter for redirection
 import "./budget.css";
 
 const Page = () => {
-  // State to hold the input values
   const [budget, setBudget] = useState({
     income: "",
     savingGoals: "",
@@ -16,13 +15,9 @@ const Page = () => {
     others: "", // Added "others" field
   });
 
-  // State to manage loading state for the submit button
   const [isLoading, setIsLoading] = useState(false);
-
-  // Initialize router for redirection
   const router = useRouter();
 
-  // Handle input change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setBudget((prevBudget) => ({
@@ -31,12 +26,10 @@ const Page = () => {
     }));
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Calculate total expenses
     const totalExpenses =
       Number(budget.groceries) +
       Number(budget.rent) +
@@ -45,14 +38,12 @@ const Page = () => {
       Number(budget.shopping) +
       Number(budget.others);
 
-    // Check if expenses exceed income
     if (totalExpenses > Number(budget.income)) {
       alert("Income is lower than expenses!");
       setIsLoading(false);
       return;
     }
 
-    // Prepare the budget data to store in local storage
     const budgetData = {
       income: budget.income,
       savingGoals: budget.savingGoals,
@@ -60,11 +51,8 @@ const Page = () => {
       remainingIncome: Number(budget.income) - totalExpenses,
     };
 
-    // Store budget data in local storage (replace if it already exists)
-
     localStorage.setItem("budgetData", JSON.stringify(budgetData));
 
-    // Create a prompt for the API based on the budget data
     const prompt = `Given the following budget details:
     - Income: $${budget.income}
     - Saving Goals: $${budget.savingGoals}
@@ -77,7 +65,19 @@ const Page = () => {
     
     Provide suggestions to manage expenses effectively and improve savings. Include a step-by-step procedure to optimize spending.`;
 
-    // Call API to get suggestions
+    const cleanSuggestions = (suggestions) => {
+      const seen = new Set();
+      return suggestions
+        .map((suggestion) => suggestion.trim()) // Trim whitespace from each suggestion
+        .filter((suggestion) => {
+          if (suggestion === "" || seen.has(suggestion)) {
+            return false;
+          }
+          seen.add(suggestion);
+          return true;
+        });
+    };
+
     try {
       const response = await fetch(
         "https://budgetwise-plxm.onrender.com/budgetwise/v1/analyze",
@@ -97,23 +97,8 @@ const Page = () => {
       const apiData = await response.json();
       console.log("API Response:", apiData);
 
-      // Function to remove duplicates
-      const removeDuplicates = (suggestions) => {
-        const seen = new Set();
-        return suggestions.filter((suggestion) => {
-          const serialized = JSON.stringify(suggestion); // Serialize suggestion to compare entire objects
-          if (seen.has(serialized)) {
-            return false;
-          }
-          seen.add(serialized);
-          return true;
-        });
-      };
-
-      // Check if the response is an array
       if (Array.isArray(apiData)) {
-        const uniqueApiData = removeDuplicates(apiData);
-        // Store filtered API response in local storage
+        const uniqueApiData = cleanSuggestions(apiData);
         localStorage.setItem(
           "budgetSuggestions",
           JSON.stringify(uniqueApiData)
@@ -123,14 +108,12 @@ const Page = () => {
           uniqueApiData
         );
       } else if (typeof apiData === "object") {
-        // If it's an object, you might want to handle duplicates within its fields if necessary
         localStorage.setItem("budgetSuggestions", JSON.stringify(apiData));
         console.log(
           "Suggestions from API successfully saved to local storage:",
           apiData
         );
       } else {
-        // Handle unexpected response formats
         console.error("Unexpected response format from the API:", apiData);
         alert("Unexpected response format from the API");
         setIsLoading(false);
@@ -142,7 +125,6 @@ const Page = () => {
       return;
     }
 
-    // Reset the form fields
     setBudget({
       income: "",
       savingGoals: "",
@@ -156,7 +138,6 @@ const Page = () => {
 
     setIsLoading(false);
 
-    // Redirect to home page
     router.push("/");
   };
 
@@ -228,14 +209,14 @@ const Page = () => {
           >
             <input
               type="number"
-              name="bills" // Changed from "eatingOut" to "bills"
-              value={budget.bills} // Changed from "eatingOut" to "bills"
+              name="bills"
+              value={budget.bills}
               onChange={handleInputChange}
               required
             />
             <span className="highlight"></span>
             <span className="bar"></span>
-            <label>Bills$</label> {/* Changed from "Eating out" to "Bills" */}
+            <label>Bills$</label>
           </div>
 
           <div
@@ -313,7 +294,7 @@ const Page = () => {
       {/* Submit Button */}
       <div style={{ textAlign: "center", marginTop: "2rem" }}>
         <button type="submit" className="submitBtn" disabled={isLoading}>
-          {isLoading ? "wait..." : "Submit"}
+          {isLoading ? "Processing..." : "Submit"}
         </button>
       </div>
     </form>
