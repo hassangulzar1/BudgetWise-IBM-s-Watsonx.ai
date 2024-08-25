@@ -1,54 +1,60 @@
 "use client";
 import React, { useEffect, useState } from "react";
 
-const ProgressBar = ({ totalBudget, spentAmount }) => {
-  const [percentage, setPercentage] = useState(0);
+const ProgressBar = () => {
+  const [progress, setProgress] = useState(0);
+  const [spentAmount, setSpentAmount] = useState(0);
+  const [remainingAmount, setRemainingAmount] = useState(0);
 
   useEffect(() => {
-    const calculatePercentage = () => {
-      if (totalBudget > 0) {
-        return Math.min((spentAmount / totalBudget) * 100, 100);
-      }
-      return 0;
-    };
+    // Retrieve data from local storage
+    const storedBudgetData = localStorage.getItem("budgetData");
+    if (storedBudgetData) {
+      const { totalExpenses, income, remainingIncome } =
+        JSON.parse(storedBudgetData);
+      setSpentAmount(totalExpenses);
+      setRemainingAmount(remainingIncome);
 
-    const targetPercentage = calculatePercentage();
-    let currentPercentage = 0;
+      // Calculate percentage and update progress bar
+      const percentage = (totalExpenses / income) * 100;
+      setProgress(percentage);
+    }
+  }, []);
 
-    const updateProgress = setInterval(() => {
-      if (currentPercentage >= targetPercentage) {
-        clearInterval(updateProgress);
-      } else {
-        currentPercentage += 1;
-        setPercentage(currentPercentage);
-      }
-    }, 10);
+  useEffect(() => {
+    let cnt = 0;
+    const red = setInterval(() => {
+      let bar = document.querySelector(".progress");
+      let percentage = setInterval(() => {
+        cnt += 1;
+        if (cnt >= progress) clearInterval(percentage);
+        document.querySelector(".text").innerHTML = `<p>${cnt}%</p>`;
+      }, 100);
+
+      if (cnt >= progress) clearInterval(red);
+      bar.style.width = cnt + "%";
+    }, 1000);
 
     // Cleanup intervals on component unmount
     return () => {
-      clearInterval(updateProgress);
+      clearInterval(red);
     };
-  }, [totalBudget, spentAmount]);
+  }, [progress]);
 
   return (
     <div style={styles.body}>
       <p style={{ color: "white", fontWeight: "700", marginTop: "1.5rem" }}>
-        {`You've spent $${spentAmount} of your monthly budget`}
+        You've spent ${spentAmount} of your monthly budget
       </p>
 
-      <div className="text" style={styles.text}>
-        <p>{`${Math.min(percentage, 100)}%`}</p>
-      </div>
+      <div className="text" style={styles.text}></div>
 
       <div className="container" style={styles.container}>
-        <div
-          className="progress"
-          style={{ ...styles.progress, width: `${percentage}%` }}
-        ></div>
+        <div className="progress" style={styles.progress}></div>
       </div>
 
       <div className="text" style={{ opacity: "0.85", marginTop: "4px" }}>
-        {`$${totalBudget - spentAmount} remaining`}
+        ${remainingAmount} remaining
       </div>
     </div>
   );
@@ -68,7 +74,7 @@ const styles = {
     backgroundColor: "#DEDFE1",
     width: "0%",
     borderRadius: "10px",
-    transition: "width 1s",
+    transition: "all 1s",
   },
   text: {
     color: "white",

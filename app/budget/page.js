@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation"; // Import useRouter for redirection
 import "./budget.css";
 
 const Page = () => {
@@ -9,13 +10,17 @@ const Page = () => {
     savingGoals: "",
     groceries: "",
     rent: "",
-    eatingOut: "",
+    bills: "", // Changed from "eatingOut" to "bills"
     transportation: "",
     shopping: "",
+    others: "", // Added "others" field
   });
 
   // State to manage loading state for the submit button
   const [isLoading, setIsLoading] = useState(false);
+
+  // Initialize router for redirection
+  const router = useRouter();
 
   // Handle input change
   const handleInputChange = (e) => {
@@ -27,7 +32,7 @@ const Page = () => {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
@@ -35,9 +40,10 @@ const Page = () => {
     const totalExpenses =
       Number(budget.groceries) +
       Number(budget.rent) +
-      Number(budget.eatingOut) +
+      Number(budget.bills) + // Changed from "eatingOut" to "bills"
       Number(budget.transportation) +
-      Number(budget.shopping);
+      Number(budget.shopping) +
+      Number(budget.others); // Include "others" in total expenses
 
     // Check if expenses exceed income
     if (totalExpenses > Number(budget.income)) {
@@ -59,18 +65,35 @@ const Page = () => {
 
     console.log("Budget Data:", budgetData);
 
+    // Call API to send the input data to the backend
+    try {
+      await fetch("/api/budget", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(budget),
+      });
+    } catch (error) {
+      alert("Error sending data to the backend:", error);
+    }
+
     // Reset the form fields
     setBudget({
       income: "",
       savingGoals: "",
       groceries: "",
       rent: "",
-      eatingOut: "",
+      bills: "", // Changed from "eatingOut" to "bills"
       transportation: "",
       shopping: "",
+      others: "", // Reset "others" field
     });
 
     setIsLoading(false);
+
+    // Redirect to home page
+    router.push("/");
   };
 
   return (
@@ -141,14 +164,14 @@ const Page = () => {
           >
             <input
               type="number"
-              name="eatingOut"
-              value={budget.eatingOut}
+              name="bills" // Changed from "eatingOut" to "bills"
+              value={budget.bills} // Changed from "eatingOut" to "bills"
               onChange={handleInputChange}
               required
             />
             <span className="highlight"></span>
             <span className="bar"></span>
-            <label>Eating out$</label>
+            <label>Bills$</label> {/* Changed from "Eating out" to "Bills" */}
           </div>
 
           <div
@@ -181,6 +204,22 @@ const Page = () => {
             <span className="highlight"></span>
             <span className="bar"></span>
             <label>Shopping$</label>
+          </div>
+
+          <div
+            className="group"
+            style={{ marginTop: "1rem", marginLeft: "6rem" }}
+          >
+            <input
+              type="number"
+              name="others"
+              value={budget.others}
+              onChange={handleInputChange}
+              required
+            />
+            <span className="highlight"></span>
+            <span className="bar"></span>
+            <label>Others$</label>
           </div>
         </div>
       </div>
