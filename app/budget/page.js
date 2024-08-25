@@ -63,12 +63,8 @@ const Page = () => {
     // Store budget data in local storage (replace if it already exists)
     try {
       localStorage.setItem("budgetData", JSON.stringify(budgetData));
-      console.log(
-        "Budget Data successfully saved to local storage:",
-        budgetData
-      );
     } catch (error) {
-      console.error("Failed to save budget data to local storage:", error);
+      return;
     }
 
     // Create a prompt for the API based on the budget data
@@ -84,6 +80,7 @@ const Page = () => {
     
     Provide suggestions to manage expenses effectively and improve savings. Include a step-by-step procedure to optimize spending.`;
 
+    // Call API to get suggestions
     // Call API to get suggestions
     try {
       const response = await fetch(
@@ -103,15 +100,24 @@ const Page = () => {
 
       const apiData = await response.json();
 
-      // Store API response in local storage
-      try {
-        localStorage.setItem("budgetSuggestions", JSON.stringify(apiData));
-        console.log(
-          "Suggestions from API successfully saved to local storage:",
-          apiData
+      // Check the type of apiData and handle accordingly
+      if (Array.isArray(apiData)) {
+        // Handle the case where the response is an array
+        const uniqueApiData = [...new Set(apiData)];
+        // Store API response in local storage
+        localStorage.setItem(
+          "budgetSuggestions",
+          JSON.stringify(uniqueApiData)
         );
-      } catch (error) {
-        console.error("Failed to save suggestions to local storage:", error);
+      } else if (typeof apiData === "object") {
+        // Handle the case where the response is an object
+        localStorage.setItem("budgetSuggestions", JSON.stringify(apiData));
+      } else {
+        // Handle unexpected response formats
+
+        alert("Unexpected response format from the API");
+        setIsLoading(false);
+        return;
       }
     } catch (error) {
       alert(`Error sending data to the backend: ${error.message}`);
@@ -290,7 +296,7 @@ const Page = () => {
       {/* Submit Button */}
       <div style={{ textAlign: "center", marginTop: "2rem" }}>
         <button type="submit" className="submitBtn" disabled={isLoading}>
-          {isLoading ? "Loading..." : "Submit"}
+          {isLoading ? "wait..." : "Submit"}
         </button>
       </div>
     </form>
