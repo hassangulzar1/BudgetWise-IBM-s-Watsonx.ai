@@ -5,4 +5,26 @@
 }
 body {
   background-color: #1f2937;
+  height: 99vh;
+}
+.html {
+  font-size: 62.5%;
+}
+
+h1 {
+  color: white;
+}
+p {
+  color: white;
+}
+
+.text {
+  color: white;
+}
+.progress {
+  height: 60%;
+  background-color: rgb(255, 30, 30);
+  width: 0%;
+  border-radius: 10px;
+  transition: all 1s;
 }

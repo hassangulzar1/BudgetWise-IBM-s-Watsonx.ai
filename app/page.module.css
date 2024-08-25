@@ -1,0 +1,13 @@
+.contain {
+  max-width: 1200px;
+  width: 90%;
+  margin: auto;
+}
+
+.headingLine {
+  margin-top: 2rem;
+}
+.para {
+  opacity: 0.85;
+  margin-top: 0.6rem;
+}
