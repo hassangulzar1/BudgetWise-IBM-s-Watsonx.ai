@@ -5,18 +5,32 @@ import ProgressBar from "@/components/Progress";
 import BudgetBox from "@/components/BudgetBox";
 
 export default function Home() {
-  // State to hold the budget data
+  // State to hold the budget data and suggestions
   const [budgetData, setBudgetData] = useState({
     income: 0,
     totalExpenses: 0,
     remainingIncome: 0,
   });
+  const [suggestions, setSuggestions] = useState("");
 
-  // Retrieve the budget data from local storage when the component mounts
+  // Retrieve the budget data and suggestions from local storage when the component mounts
   useEffect(() => {
     const storedBudgetData = JSON.parse(localStorage.getItem("budgetData"));
+    const storedSuggestions = JSON.parse(
+      localStorage.getItem("budgetSuggestions")
+    );
+
     if (storedBudgetData) {
       setBudgetData(storedBudgetData);
+    }
+
+    if (storedSuggestions) {
+      // Replace newline characters with <br /> for HTML rendering
+      const formattedSuggestions = storedSuggestions.response.replace(
+        /\n/g,
+        "<br />"
+      );
+      setSuggestions(formattedSuggestions);
     }
   }, []);
 
@@ -81,6 +95,8 @@ export default function Home() {
           height: "40vh",
           borderRadius: "10px",
           textOverflow: "clip",
+          overflow: "auto", // Added to handle overflow of long suggestions
+          padding: "1rem", // Added padding for better readability
         }}
       >
         <p
@@ -88,6 +104,12 @@ export default function Home() {
         >
           Suggestions to manage your budget
         </p>
+        <div
+          style={{ marginTop: "1rem", padding: "0 1rem", color: "white" }}
+          dangerouslySetInnerHTML={{
+            __html: suggestions || "No suggestions available",
+          }}
+        />
       </div>
     </>
   );
