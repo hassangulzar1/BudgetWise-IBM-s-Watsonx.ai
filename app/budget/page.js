@@ -75,7 +75,7 @@ const Page = () => {
         body: JSON.stringify(budget),
       });
     } catch (error) {
-      alert("Error sending data to the backend:", error);
+      alert(`Error sending data to the backend: ${error}`);
     }
 
     // Reset the form fields

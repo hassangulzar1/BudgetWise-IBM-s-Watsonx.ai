@@ -61,6 +61,9 @@ const ProgressBar = () => {
 };
 
 const styles = {
+  body: {
+    // You may want to define the body styles here if needed
+  },
   container: {
     width: "100%",
     height: "20px",
