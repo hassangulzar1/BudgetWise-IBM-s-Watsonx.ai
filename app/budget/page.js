@@ -73,6 +73,16 @@ const page = () => {
             <span class="bar"></span>
             <label>Shopping$</label>
           </div>
+
+          <div
+            className="group"
+            style={{ marginTop: "1rem", marginLeft: "6rem" }}
+          >
+            <input type="number" required />
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label>Saving Goals$</label>
+          </div>
         </div>
       </div>
     </>
