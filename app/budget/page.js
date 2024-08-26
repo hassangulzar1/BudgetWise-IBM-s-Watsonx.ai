@@ -85,7 +85,7 @@ const Page = () => {
       console.log("oroginal res", apiData);
 
       let valuesArray = Object.values(apiData);
-      valuesArray = valuesArray[0].split("\n");
+      valuesArray = valuesArray[0].split(".");
       const suggestions = new Set(valuesArray);
 
       valuesArray = Array.from(suggestions);

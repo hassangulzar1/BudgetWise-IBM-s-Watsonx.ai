@@ -32,7 +32,7 @@ export default function Home() {
 
       // Set the state with the retrieved values
       setBudgetData(storedBudgetData);
-      setSuggestions(storedSuggestions.slice(0, -1));
+      setSuggestions(storedSuggestions);
     } catch (error) {
       console.error("Error parsing local storage data:", error);
 
@@ -45,6 +45,8 @@ export default function Home() {
       setSuggestions([]);
     }
   }, []);
+
+  console.log("suggestion's i pri", suggestions);
 
   return (
     <>
@@ -118,14 +120,21 @@ export default function Home() {
         </p>
         <div />
         <ol style={{ marginTop: "10px" }}>
-          {suggestions.map((item, index) => (
-            <li
-              key={index}
-              style={{ color: "white", marginLeft: "15px", marginTop: "2px" }}
-            >
-              {item}
-            </li>
-          ))}
+          {suggestions.map(
+            (item, index) =>
+              item != "" && (
+                <li
+                  key={index}
+                  style={{
+                    color: "white",
+                    marginLeft: "15px",
+                    marginTop: "2px",
+                  }}
+                >
+                  {item}
+                </li>
+              )
+          )}
         </ol>
       </div>
     </>
