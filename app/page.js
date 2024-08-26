@@ -11,32 +11,18 @@ export default function Home() {
     totalExpenses: 0,
     remainingIncome: 0,
   });
-  const [suggestions, setSuggestions] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
 
   // Retrieve the budget data and suggestions from local storage when the component mounts
   useEffect(() => {
     const storedBudgetData = JSON.parse(localStorage.getItem("budgetData"));
-    const storedSuggestions = JSON.parse(
+    let storedSuggestions = JSON.parse(
       localStorage.getItem("budgetSuggestions")
-    );
+    ).slice(0, -1);
 
-    if (storedBudgetData) {
+    if (storedBudgetData || storedSuggestions) {
       setBudgetData(storedBudgetData);
-    }
-
-    if (storedSuggestions) {
-      // Replace newline characters with <br /> for HTML rendering
-      let formattedSuggestions = storedSuggestions.response
-        .replace(/\n/g, "<br />") // Keep newlines as <br />
-        .replace(/(\.)(?!\d)/g, ".<br />"); // Replace periods with <br /> unless followed by a digit (to avoid breaking sentences with decimal numbers)
-
-      // Add numbering to each line
-      let lines = formattedSuggestions.split("<br />");
-      let numberedLines = lines
-        .map((line, index) => `${index + 1}. ${line}`)
-        .join("<br />");
-
-      setSuggestions(numberedLines);
+      setSuggestions([...storedSuggestions]);
     }
   }, []);
 
@@ -110,12 +96,17 @@ export default function Home() {
         >
           Suggestions to manage your budget
         </p>
-        <div
-          style={{ marginTop: "1rem", padding: "0 1rem", color: "white" }}
-          dangerouslySetInnerHTML={{
-            __html: suggestions || "No suggestions available",
-          }}
-        />
+        <div />
+        <ol style={{ marginTop: "10px" }}>
+          {suggestions.map((item, index) => (
+            <li
+              key={index}
+              style={{ color: "white", marginLeft: "15px", marginTop: "2px" }}
+            >
+              {item}.
+            </li>
+          ))}
+        </ol>
       </div>
     </>
   );

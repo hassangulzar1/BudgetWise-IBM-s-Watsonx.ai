@@ -95,30 +95,11 @@ const Page = () => {
       }
 
       const apiData = await response.json();
-      console.log("API Response:", apiData);
+      let valuesArray = Object.values(apiData)[0].split(".");
+      const suggestions = new Set(valuesArray);
 
-      if (Array.isArray(apiData)) {
-        const uniqueApiData = cleanSuggestions(apiData);
-        localStorage.setItem(
-          "budgetSuggestions",
-          JSON.stringify(uniqueApiData)
-        );
-        console.log(
-          "Filtered suggestions from API successfully saved to local storage:",
-          uniqueApiData
-        );
-      } else if (typeof apiData === "object") {
-        localStorage.setItem("budgetSuggestions", JSON.stringify(apiData));
-        console.log(
-          "Suggestions from API successfully saved to local storage:",
-          apiData
-        );
-      } else {
-        console.error("Unexpected response format from the API:", apiData);
-        alert("Unexpected response format from the API");
-        setIsLoading(false);
-        return;
-      }
+      valuesArray = Array.from(suggestions);
+      localStorage.setItem("budgetSuggestions", JSON.stringify(valuesArray));
     } catch (error) {
       alert(`Error sending data to the backend: ${error.message}`);
       setIsLoading(false);
