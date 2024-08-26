@@ -19,10 +19,11 @@ export default function Home() {
     let storedSuggestions =
       JSON.parse(localStorage.getItem("budgetSuggestions")) || [];
 
-    if (storedBudgetData || storedSuggestions) {
+    if (storedBudgetData) {
       setBudgetData(storedBudgetData);
-      setSuggestions([...storedSuggestions]);
     }
+
+    setSuggestions([...storedSuggestions].slice(0, -1));
   }, []);
 
   return (
