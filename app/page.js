@@ -123,7 +123,7 @@ export default function Home() {
               key={index}
               style={{ color: "white", marginLeft: "15px", marginTop: "2px" }}
             >
-              {item}.
+              {item}
             </li>
           ))}
         </ol>

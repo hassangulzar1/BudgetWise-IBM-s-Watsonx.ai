@@ -95,8 +95,10 @@ const Page = () => {
       }
 
       const apiData = await response.json();
+      console.log("oroginal res", apiData);
+
       let valuesArray = Object.values(apiData);
-      valuesArray = valuesArray[0].split(".");
+      valuesArray = valuesArray[0].split("\n");
       const suggestions = new Set(valuesArray);
 
       valuesArray = Array.from(suggestions);
