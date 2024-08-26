@@ -22,7 +22,7 @@ export default function Home() {
 
     if (storedBudgetData || storedSuggestions) {
       setBudgetData(storedBudgetData);
-      setSuggestions([...storedSuggestions].slice(0, -1));
+      setSuggestions([...storedSuggestions]);
     }
   }, []);
 
