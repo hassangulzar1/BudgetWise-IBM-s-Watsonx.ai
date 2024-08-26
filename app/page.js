@@ -16,15 +16,33 @@ export default function Home() {
 
   // Retrieve the budget data and suggestions from local storage when the component mounts
   useEffect(() => {
-    const storedBudgetData = JSON.parse(localStorage.getItem("budgetData"));
-    let storedSuggestions =
-      JSON.parse(localStorage.getItem("budgetSuggestions")) || [];
+    try {
+      // Retrieve and parse budget data from local storage
+      const storedBudgetData = JSON.parse(
+        localStorage.getItem("budgetData")
+      ) || {
+        income: 0,
+        totalExpenses: 0,
+        remainingIncome: 0,
+      };
 
-    if (storedBudgetData) {
+      // Retrieve and parse suggestions from local storage
+      const storedSuggestions =
+        JSON.parse(localStorage.getItem("budgetSuggestions")) || [];
+
+      // Set the state with the retrieved values
       setBudgetData(storedBudgetData);
+      setSuggestions(storedSuggestions.slice(0, -1));
+    } catch (error) {
+      console.error("Error parsing local storage data:", error);
+      // Handle the error or set default values as needed
+      setBudgetData({
+        income: 0,
+        totalExpenses: 0,
+        remainingIncome: 0,
+      });
+      setSuggestions([]);
     }
-
-    setSuggestions(storedSuggestions.slice(0, -1));
   }, []);
 
   return (
