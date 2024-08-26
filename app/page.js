@@ -16,9 +16,8 @@ export default function Home() {
   // Retrieve the budget data and suggestions from local storage when the component mounts
   useEffect(() => {
     const storedBudgetData = JSON.parse(localStorage.getItem("budgetData"));
-    let storedSuggestions = JSON.parse(
-      localStorage.getItem("budgetSuggestions")
-    );
+    let storedSuggestions =
+      JSON.parse(localStorage.getItem("budgetSuggestions")) || [];
 
     if (storedBudgetData || storedSuggestions) {
       setBudgetData(storedBudgetData);
