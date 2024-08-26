@@ -131,7 +131,7 @@ export default function Home() {
                     marginTop: "2px",
                   }}
                 >
-                  {item}
+                  {item}.
                 </li>
               )
           )}
