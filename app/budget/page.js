@@ -65,19 +65,6 @@ const Page = () => {
     
     Provide suggestions to manage expenses effectively and improve savings. Include a step-by-step procedure to optimize spending.`;
 
-    const cleanSuggestions = (suggestions) => {
-      const seen = new Set();
-      return suggestions
-        .map((suggestion) => suggestion.trim()) // Trim whitespace from each suggestion
-        .filter((suggestion) => {
-          if (suggestion === "" || seen.has(suggestion)) {
-            return false;
-          }
-          seen.add(suggestion);
-          return true;
-        });
-    };
-
     try {
       const response = await fetch(
         "https://budgetwise-plxm.onrender.com/budgetwise/v1/analyze",
