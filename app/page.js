@@ -20,7 +20,6 @@ export default function Home() {
       localStorage.getItem("budgetSuggestions")
     );
 
-    storedSuggestions = storedSuggestions.slice(0, -1);
     if (storedBudgetData || storedSuggestions) {
       setBudgetData(storedBudgetData);
       setSuggestions([...storedSuggestions]);
