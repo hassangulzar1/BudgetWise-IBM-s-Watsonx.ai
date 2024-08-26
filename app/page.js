@@ -11,6 +11,7 @@ export default function Home() {
     totalExpenses: 0,
     remainingIncome: 0,
   });
+
   const [suggestions, setSuggestions] = useState([]);
 
   // Retrieve the budget data and suggestions from local storage when the component mounts
@@ -23,7 +24,7 @@ export default function Home() {
       setBudgetData(storedBudgetData);
     }
 
-    setSuggestions([...storedSuggestions].slice(0, -1));
+    setSuggestions(storedSuggestions.slice(0, -1));
   }, []);
 
   return (
