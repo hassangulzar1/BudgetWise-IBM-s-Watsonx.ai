@@ -35,6 +35,7 @@ export default function Home() {
       setSuggestions(storedSuggestions.slice(0, -1));
     } catch (error) {
       console.error("Error parsing local storage data:", error);
+
       // Handle the error or set default values as needed
       setBudgetData({
         income: 0,
@@ -113,7 +114,7 @@ export default function Home() {
         <p
           style={{ textAlign: "center", fontSize: "1.4rem", marginTop: "5px" }}
         >
-          Suggestions to manage your budget
+          Suggestions by (IBM watsonx) to manage your budget
         </p>
         <div />
         <ol style={{ marginTop: "10px" }}>
